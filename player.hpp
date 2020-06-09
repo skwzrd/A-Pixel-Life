@@ -5,7 +5,8 @@
 #include "utils.hpp"
 
 class Player {
-public:
+
+private:
     std::string name;
 
     std::string textureFile = assetsPath + "entities.png";
@@ -22,64 +23,29 @@ public:
 
     float speed;
 
-    Player() {
-        name = "Theodore";
+public:
 
-        sSheet.setCoords(0.f, 0.f, 16.f, 32.f);
+    Player();
 
-        speed = 1.5;
+    void setPosition(float x, float y);
 
-        if (!loadTexture()) {
-            return;
-        }
+    float getX();
+    float getY();
+    float getSpeed();
+    sf::Sprite getSprite();
 
-        w = sSheet.w;
-        h = sSheet.h;
+    sf::Vector2f getPosition();
 
-        sf::Vector2f scale = sprite.getScale();
-        if (scale != sf::Vector2f(1.f, 1.f)) {
-            w *= scale.x;
-            h *= scale.y;
-        }
+    void move(float x, float y);
 
-        sf::Vector2f dc = defaultCoords(w, h);
-        setPosition(dc.x, dc.y);
-    }
+    bool loadTexture();
 
-    void setPosition(float x, float y) {
-        sprite.setPosition(x, y);
-        xPos = x;
-        yPos = y;
-    }
+    void update();
 
-    sf::Vector2f getPosition() {
-        return sprite.getPosition();
-    }
-
-    void move(float x, float y) {
-        sprite.move(x, y);
-        xPos = sprite.getPosition().x;
-        yPos = sprite.getPosition().y;
-        
-        int hOffset = 0;
-        int wOffset = 0;
-        if (xPos > WINDOW_W - w + wOffset|| xPos < 0 - wOffset || yPos < 0 - hOffset|| yPos > WINDOW_H - h + hOffset) {
-            move(-x, -y);
-        }
-    }
-
-    bool loadTexture() {
-        // load the texture file
-        if (!texture.loadFromFile(textureFile)) {
-            std::cout << "Error reading texture from " << textureFile << "\n\n";
-            return false;
-        }
-        sprite.setTexture(texture);
-        texture.setSmooth(true);
-        sf::IntRect r(sSheet.x, sSheet.y, sSheet.w, sSheet.h);
-        sprite.setTextureRect(r);
-        return true;
-    }
+    int getRightFootBlock();
+    int getLeftFootBlock();
+    int getRightHeadBlock();
+    int getLeftHeadBlock();
 
 };
 
