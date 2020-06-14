@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include "map.hpp"
 
 sf::Vector2f windowCenter() {
     float x_mid = ((float)WINDOW_W) / 2.0;
@@ -10,7 +11,7 @@ sf::Vector2f windowCenter() {
 sf::Vector2f defaultCoords(float width, float height) {
     sf::Vector2f v;
     v.x = windowCenter().x - (width / 2);
-    v.y = windowCenter().y - (height / 2);
+    v.y = windowCenter().y - (height / 2) - TileMap::tileSize.y;
     return v;
 }
 
@@ -27,15 +28,55 @@ sf::Vector2f vF_to_vI(sf::Vector2f vf) {
 }
 
 
-SpriteSheet::SpriteSheet() : x(0), y(0), w(0), h(0) {};
+void SpriteSheet::updateIntRectY()
+{
+    intRectY = sf::IntRect(x, y, w, h);
+}
 
-SpriteSheet::SpriteSheet(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h) {};
+
+void SpriteSheet::updateIntRectYReflected()
+{
+    intRectYReflected = sf::IntRect(x + w, y, -w, h);
+}
+
+
+SpriteSheet::SpriteSheet() : x(0), y(0), w(0), h(0)
+{
+    updateIntRectY();
+    updateIntRectYReflected();
+};
+
+SpriteSheet::SpriteSheet(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h)
+{
+    updateIntRectY();
+    updateIntRectYReflected();
+};
 
 void SpriteSheet::setCoords(float _x, float _y, float _w, float _h) {
     x = _x;
     y = _y;
     w = _w;
     h = _h;
+    updateIntRectY();
+    updateIntRectYReflected();
 }
 
+float SpriteSheet::getX()
+{
+    return x;
+}
 
+float SpriteSheet::getY()
+{
+    return y;
+}
+
+float SpriteSheet::getH()
+{
+    return h;
+}
+
+float SpriteSheet::getW()
+{
+    return w;
+}

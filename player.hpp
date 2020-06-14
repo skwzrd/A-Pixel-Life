@@ -7,6 +7,9 @@
 class Player {
 
 private:
+
+    static const int max_speed_y;
+
     std::string name;
 
     std::string textureFile = assetsPath + "entities.png";
@@ -21,31 +24,56 @@ private:
     float w;
     float h;
 
-    float speed;
+    sf::Vector2f lastValidPosition;
+    HitBox hitbox;
+
+    sf::Vector2f speed;
+    float gravity;
+    float gravity_accel;
+
 
 public:
+    std::string input;
 
     Player();
+    ~Player();
 
     void setPosition(float x, float y);
-
-    float getX();
-    float getY();
-    float getSpeed();
-    sf::Sprite getSprite();
+    void setPosition(sf::Vector2f v2f);
 
     sf::Vector2f getPosition();
+    float getX();
+    float getY();
 
-    void move(float x, float y);
+    bool validPosition();
 
+    sf::Vector2f getSpeed();
+    float getSpeedX();
+    float getSpeedY();
+
+    sf::Sprite getSprite();
+    void setSpriteLeft();
+    void setSpriteRight();
     bool loadTexture();
 
-    void update();
 
-    int getRightFootBlock();
-    int getLeftFootBlock();
-    int getRightHeadBlock();
-    int getLeftHeadBlock();
+    void move(float x, float y);
+    void jump();
+
+    void update(float sec);
+    float getGravityAcceleration(float sec);
+    void collisionDetection(float sec);
+    void keyboardInput();
+    void momentumHandler(float sec);
+
+    int getPos0Block(float leeway = 0);
+    int getPos1Block(float leeway = 0);
+    int getPos2Block();
+    int getPos3Block();
+    int getPos4Block(float leeway = 0);
+    int getPos5Block(float leeway = 0);
+
+    bool feetInSky(float leeway = 0);
 
 };
 

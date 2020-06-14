@@ -33,6 +33,8 @@ Game::Game() {
     debugText.setOutlineThickness(1);
 }
 
+Game::~Game() {}
+
 void Game::centerViewAt(sf::Vector2f v2f) {
     view->setCenter(v2f);
     window->setView(*view);
@@ -45,11 +47,13 @@ void Game::displayDebug() {
         data.append("Debug info:\n");
         if (playerSet)
         {
-            data.append("xPos: " + std::to_string((int)player.getX()) + " yPos: " + std::to_string((int)player.getY()) + "\n");
-            data.append("Left Head: " + std::to_string(player.getLeftHeadBlock()) + "\n");
-            data.append("Right Head: " + std::to_string(player.getRightHeadBlock()) + "\n");
-            data.append("Left Foot: " + std::to_string(player.getLeftFootBlock()) + "\n");
-            data.append("Right Foot: " + std::to_string(player.getRightFootBlock()) + "\n");
+            data.append("xPos: " + std::to_string(player.getX()) + " yPos: " + std::to_string(player.getY()) + "\n");
+            data.append("Vx: " + std::to_string(player.getSpeedX()) + " Vy: " + std::to_string(player.getSpeedY()) + "\n");
+            data.append("Left Head: " + std::to_string(player.getPos0Block()) + "\n");
+            data.append("Right Head: " + std::to_string(player.getPos1Block()) + "\n");
+            data.append("Left Foot: " + std::to_string(player.getPos4Block()) + "\n");
+            data.append("Right Foot: " + std::to_string(player.getPos5Block()) + "\n");
+            data.append("\n\nKeys pressed: " + player.input + "\n");
         }
         debugText.setString(data);
         sf::Vector2f textPos = getTopRightFromCenter(view->getCenter(), view->getSize());
@@ -68,31 +72,6 @@ Player& Game::getPlayer() {
 
 TileMap& Game::getMap() {
     return map;
-}
-
-void inputLoop(Player& theo) {
-    // movement
-    // up
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-    {
-        theo.move(0, -theo.getSpeed() * 1.5);
-    }
-    // left
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-    {
-        theo.move(-theo.getSpeed(), 0);
-    }
-    // down
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-    {
-        theo.move(0, theo.getSpeed() * 1.5);
-    }
-    // right
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-    {
-        theo.move(theo.getSpeed(), 0);
-    }
-
 }
 
 

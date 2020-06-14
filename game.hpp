@@ -22,6 +22,7 @@ public:
     bool playerSet;
 
     Game();
+    ~Game();
 
     void centerViewAt(sf::Vector2f v2f);
     void displayDebug();
@@ -32,5 +33,4 @@ public:
 };
 
 
-void inputLoop(Player& theo);
 void eventLoop(Game& game, Player& theo);

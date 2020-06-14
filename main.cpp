@@ -18,6 +18,7 @@ int main()
     TileMap& map = game.getMap();
     Player& theo = game.getPlayer();
 
+    sf::Clock gameClock;
     sf::Clock clock;
     float sec = 0;
 
@@ -33,11 +34,10 @@ int main()
         game.centerViewAt(vF_to_vI(theo.getPosition()));
 
 
-        inputLoop(theo);
         eventLoop(game, theo);
         game.displayDebug();
 
-        theo.update();
+        theo.update(sec);
 
         window->display();
         Sleep(10);

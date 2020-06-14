@@ -20,19 +20,55 @@ TileMap::TileMap()
     }
 }
 
+TileMap::~TileMap() {};
+
+int TileMap::randomSky()
+{
+    // 5 sky blocks, starting at 8
+    return rand() % 5 + 8;
+}
+
+int TileMap::randomGround()
+{
+    int num = rand() % 100;
+    int blockNum = blocks::corrupt;
+    // probabilities
+    if (num < 40) {
+        blockNum = blocks::dirt;
+    }
+    else if (num < 75) {
+        blockNum = blocks::limestone;
+    }
+    else if (num < 85) {
+        blockNum = blocks::sand;
+    }
+    else if (num < 88) {
+        blockNum = blocks::emerald;
+    }
+    else if (num < 93) {
+        blockNum = blocks::lapis;
+    }
+    else if (num < 96) {
+        blockNum = blocks::ruby;
+    }
+    else {
+        blockNum = blocks::gold;
+    }
+    return blockNum;
+}
 
 std::vector<int> TileMap::generateMap()
 {
     std::vector<int> level;
-    //         half the map      plus a bit more     remove left over half row
-    int sky = ((levelSize / 2) + (2 * levelWidth)) - (levelWidth / 2);
+    // all the blocks that are to be sky
+    //         half the map     remove left over half row    plus one for 1 index
+    int sky = (levelSize / 2) + (levelWidth / 2) + 1;
     for (int i = 0; i < levelSize; i++)
     {
         int blockNum = blocks::corrupt;
         if (i < sky)
         {
-            // 5 sky blocks, starting at 8
-            blockNum = rand() % 5 + 8;
+            blockNum = randomSky();
         }
         else if (i >= sky && i < sky + levelWidth)
         {
@@ -40,33 +76,25 @@ std::vector<int> TileMap::generateMap()
         }
         else
         {
-            int num = rand() % 100;
-
-            // probabilities
-            if (num < 40) {
-                blockNum = blocks::dirt;
-            }
-            else if (num < 75) {
-                blockNum = blocks::limestone;
-            }
-            else if (num < 85) {
-                blockNum = blocks::sand;
-            }
-            else if (num < 88) {
-                blockNum = blocks::emerald;
-            }
-            else if (num < 93) {
-                blockNum = blocks::lapis;
-            }
-            else if (num < 96) {
-                blockNum = blocks::ruby;
-            }
-            else {
-                blockNum = blocks::gold;
-            }
+            blockNum = randomGround();
         }
         level.push_back(blockNum);
     }
+
+    // I want a crater in the center of the map for collision detection testing
+    // let's just hard code one for now...
+    int crater[] = {
+        1052, 1053, 1054, 1055, 1056, 1057, 1058, 1059, 1060, 1061,
+        1094, 1095, 1096, 1097, 1098, 1099, 1100, 1101, 1102, 1103, 1104,
+        1137, 1138, 1139, 1140, 1141, 1142, 1143, 1144, 1145, 1146, 1147, 1148,
+        1179, 1180, 1181, 1182, 1183, 1184, 1185, 1186, 1187, 1188, 1189, 1190, 1191, 1192,
+        1225, 1226, 1227, 1228, 1229, 1230, 1231, 1232, 1233, 1234, 1235, 1236,
+    };
+    for (int i = 0; i < sizeof(crater)/sizeof(crater[0]); i++)
+    {
+        level[crater[i]] = randomSky();
+    }
+
     return level;
 }
 

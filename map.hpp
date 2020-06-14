@@ -40,10 +40,14 @@ public:
     };
 
     TileMap();
+    ~TileMap();
 
     bool load();
 
     static int getBlockAtPosition(sf::Vector2f v);
 
     static std::vector<int> generateMap();
+
+    static int randomGround();
+    static int randomSky();
 };
