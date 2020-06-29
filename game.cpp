@@ -2,9 +2,9 @@
 #include <SFML/Graphics.hpp>
 
 #include "utils.hpp"
-#include "player.hpp"
-#include "map.hpp"
 #include "game.hpp"
+#include "tilemap.hpp"
+#include "player.hpp"
 
 
 Game::Game() {
@@ -49,18 +49,23 @@ void Game::displayDebug() {
         {
             data.append("xPos: " + std::to_string(player.getX()) + " yPos: " + std::to_string(player.getY()) + "\n");
             data.append("Vx: " + std::to_string(player.getSpeedX()) + " Vy: " + std::to_string(player.getSpeedY()) + "\n");
-            data.append("Left Head: " + std::to_string(player.getPos0Block()) + "\n");
-            data.append("Right Head: " + std::to_string(player.getPos1Block()) + "\n");
-            data.append("Left Foot: " + std::to_string(player.getPos4Block()) + "\n");
-            data.append("Right Foot: " + std::to_string(player.getPos5Block()) + "\n");
+            for (int i = 0; i < 6; i++) {
+                data.append("Pos " + std::to_string(i) + ": " + player.getHitBox().getBlockNameAtPositionN(i, 0.5) + "\n");
+            }
             data.append("\n\nKeys pressed: " + player.input + "\n");
         }
         debugText.setString(data);
         sf::Vector2f textPos = getTopRightFromCenter(view->getCenter(), view->getSize());
         debugText.setPosition(textPos);
+
         window->draw(debugText);
 
         bdisplayDebug = true;
+    }
+
+    if (player.displayHitBox) {
+        window->draw(player.getHitBoxShape());
+        player.displayHitBox = true;
     }
 }
 
@@ -100,8 +105,19 @@ void eventLoop(Game& game, Player& theo) {
                     game.bdisplayDebug = false;
                 }
             }
-
+            if (event.key.code == sf::Keyboard::H) {
+                // display player hitbox
+                // show debug display
+                if (!game.player.displayHitBox) {
+                    std::cout << "Displaying hitbox" << std::endl;
+                    game.player.displayHitBox = true;
+                }
+                // hide debug display
+                else {
+                    std::cout << "Hiding hitbox" << std::endl;
+                    game.player.displayHitBox = false;
+                }
+            }
         }
     }
-
 }

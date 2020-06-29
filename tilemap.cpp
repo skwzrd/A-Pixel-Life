@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "utils.hpp"
-#include "map.hpp"
+#include "tilemap.hpp"
 
 
 const sf::Vector2u TileMap::tileSize = sf::Vector2u(16, 16);
@@ -12,6 +12,23 @@ const int TileMap::levelWidth = (WINDOW_W / TileMap::tileSize.x);
 const int TileMap::levelHeight = (WINDOW_H / TileMap::tileSize.y);
 const int TileMap::levelSize = TileMap::levelWidth * TileMap::levelHeight;
 std::vector<int> TileMap::level = TileMap::generateMap();
+
+const std::map<int, std::string> TileMap::block_map = {
+    {0, "grass"},
+    {1, "dirt"},
+    {2, "sand"},
+    {3, "limestone"},
+    {4, "emerald"},
+    {5, "lapis"},
+    {6, "ruby"},
+    {7, "gold"},
+    {8, "sky1"},
+    {9, "sky2"},
+    {10, "sky3"},
+    {11, "sky4"},
+    {12, "sky5"},
+    {13, "corrupt"}
+};
 
 TileMap::TileMap()
 {
@@ -27,6 +44,7 @@ int TileMap::randomSky()
     // 5 sky blocks, starting at 8
     return rand() % 5 + 8;
 }
+
 
 int TileMap::randomGround()
 {
@@ -150,6 +168,14 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
     // draw the vertex array
     target.draw(m_vertices, states);
+}
+
+
+bool TileMap::blockIsSky(int block) {
+    if (block >= TileMap::blocks::sky1) {
+        return true;
+    }
+    return false;
 }
 
 int TileMap::getBlockAtPosition(sf::Vector2f v)

@@ -12,7 +12,7 @@ sf::Vector2f defaultCoords(float width, float height);
 
 sf::Vector2f getTopRightFromCenter(sf::Vector2f center, sf::Vector2f size);
 
-sf::Vector2f vF_to_vI(sf::Vector2f vf);
+sf::Vector2i vF_to_vI(sf::Vector2f vf);
 
 class SpriteSheet {
 private:

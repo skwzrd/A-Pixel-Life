@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "utils.hpp"
+#include "hitbox.hpp"
 
 class Player {
 
@@ -25,23 +26,29 @@ private:
     float h;
 
     sf::Vector2f lastValidPosition;
-    HitBox hitbox;
+    //HitBox hitbox;
 
     sf::Vector2f speed;
     float gravity;
     float gravity_accel;
 
+    HitBox hitbox;
+
 
 public:
     std::string input;
+    bool displayHitBox;
 
     Player();
     ~Player();
+
+    HitBox getHitBox();
 
     void setPosition(float x, float y);
     void setPosition(sf::Vector2f v2f);
 
     sf::Vector2f getPosition();
+    sf::Vector2i getPositionInt();
     float getX();
     float getY();
 
@@ -61,19 +68,11 @@ public:
     void jump();
 
     void update(float sec);
+    sf::RectangleShape getHitBoxShape();
     float getGravityAcceleration(float sec);
     void collisionDetection(float sec);
     void keyboardInput();
     void momentumHandler(float sec);
-
-    int getPos0Block(float leeway = 0);
-    int getPos1Block(float leeway = 0);
-    int getPos2Block();
-    int getPos3Block();
-    int getPos4Block(float leeway = 0);
-    int getPos5Block(float leeway = 0);
-
-    bool feetInSky(float leeway = 0);
 
 };
 

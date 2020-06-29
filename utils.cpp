@@ -1,5 +1,5 @@
 #include "utils.hpp"
-#include "map.hpp"
+#include "tilemap.hpp"
 
 sf::Vector2f windowCenter() {
     float x_mid = ((float)WINDOW_W) / 2.0;
@@ -22,8 +22,8 @@ sf::Vector2f getTopRightFromCenter(sf::Vector2f center, sf::Vector2f size) {
     return v;
 }
 
-sf::Vector2f vF_to_vI(sf::Vector2f vf) {
-    sf::Vector2f vI((int)vf.x, (int)vf.y);
+sf::Vector2i vF_to_vI(sf::Vector2f vf) {
+    sf::Vector2i vI((int)vf.x, (int)vf.y);
     return vI;
 }
 

@@ -5,14 +5,14 @@
 
 #include "player.hpp"
 #include "utils.hpp"
-#include "map.hpp"
+#include "tilemap.hpp"
 #include "game.hpp"
 
 
 int main()
 {
     Game game;
-    std::shared_ptr<sf::RenderWindow> window = game.window;
+    std::shared_ptr<sf::RenderWindow>& window = game.window;
     window->setFramerateLimit(50);
 
     TileMap& map = game.getMap();
@@ -27,15 +27,15 @@ int main()
     {
         window->clear(sf::Color::Black);
         sec = clock.restart().asSeconds();
-        
+
 
         window->draw(map);
-        window->draw(theo.getSprite());
-        game.centerViewAt(vF_to_vI(theo.getPosition()));
-
-
-        eventLoop(game, theo);
         game.displayDebug();
+        window->draw(theo.getSprite());
+
+        game.centerViewAt(theo.getPosition());
+        
+        eventLoop(game, theo);
 
         theo.update(sec);
 

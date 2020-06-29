@@ -4,10 +4,12 @@
 
 #include "player.hpp"
 #include "utils.hpp"
-#include "map.hpp"
-
+#include "tilemap.hpp"
+#include "hitbox.hpp"
+#include "utils.hpp"
 
 const int Player::max_speed_y = 2;
+
 
 Player::Player() {
     name = "Theodore";
@@ -36,67 +38,18 @@ Player::Player() {
     setPosition(dc.x, dc.y);
     lastValidPosition = sf::Vector2f(dc.x, dc.y);
 
-    // This outlines the hitbox points on Player
-    // 
-    // 0       1
-    //     0
-    //  /--|--\
-    //  |  |  |
-    // 2   |   3
-    //    / \  
-    //   /   \
-    // _/     \_
-    // 4       5
-    
-    // trying composition rather than inheritance
-    hitbox = HitBox(xPos, yPos, w, h);
     input = "";
+    displayHitBox = false;
+
+    hitbox = HitBox::HitBox(xPos, yPos, w, h, 6);
 }
 
 Player::~Player() {}
 
-// 0
-int Player::getPos0Block(float leeway)
-{
-    sf::Vector2f pos = sf::Vector2f(xPos, yPos + leeway);
-    return TileMap::getBlockAtPosition(pos);
-}
 
-// 1
-int Player::getPos1Block(float leeway)
-{
-    sf::Vector2f pos = sf::Vector2f(xPos + w, yPos + leeway);
-    return TileMap::getBlockAtPosition(pos);
+HitBox Player::getHitBox() {
+    return hitbox;
 }
-
-// 2
-int Player::getPos2Block()
-{
-    sf::Vector2f pos = sf::Vector2f(xPos, yPos + h / 2);
-    return TileMap::getBlockAtPosition(pos);
-}
-
-// 3
-int Player::getPos3Block()
-{
-    sf::Vector2f pos = sf::Vector2f(xPos + w, yPos + h / 2);
-    return TileMap::getBlockAtPosition(pos);
-}
-
-// 4
-int Player::getPos4Block(float leeway)
-{
-    sf::Vector2f pos = sf::Vector2f(xPos, yPos + h + leeway);
-    return TileMap::getBlockAtPosition(pos);
-}
-
-// 5
-int Player::getPos5Block(float leeway)
-{
-    sf::Vector2f pos = sf::Vector2f(xPos + w, yPos + h + leeway);
-    return TileMap::getBlockAtPosition(pos);
-}
-
 
 void Player::setPosition(float x, float y) {
     sprite.setPosition(x, y);
@@ -133,24 +86,18 @@ sf::Vector2f Player::getPosition() {
     return sprite.getPosition();
 }
 
+sf::Vector2i Player::getPositionInt() {
+    return vF_to_vI(sprite.getPosition());
+}
+
 sf::Sprite Player::getSprite() {
     return sprite;
 }
 
+
 bool Player::validPosition()
 {
-    float leeway = 0.5;
-    if (   getPos0Block(leeway) >= TileMap::blocks::sky1
-        && getPos1Block(leeway) >= TileMap::blocks::sky1
-        && getPos2Block() >= TileMap::blocks::sky1
-        && getPos3Block() >= TileMap::blocks::sky1
-        && getPos4Block() >= TileMap::blocks::sky1
-        && getPos5Block() >= TileMap::blocks::sky1
-        )
-    {
-        return true;
-    }
-    return false;
+    return hitbox.validPosition();
 }
 
 void Player::move(float x, float y)
@@ -158,14 +105,15 @@ void Player::move(float x, float y)
     sprite.move(x, y);
     xPos = sprite.getPosition().x;
     yPos = sprite.getPosition().y;
-
+     
     int hOffset = 0;
+    hitbox.update(sprite.getPosition().x, sprite.getPosition().y);
     int wOffset = 0;
     if (getX() > WINDOW_W - w + wOffset || getX() < 0 - wOffset || getY() < 0 - hOffset || getY() > WINDOW_H - h + hOffset) {
         move(-x, -y);
     }
 
-    if (validPosition())
+    if ( Player::validPosition())
     {
         lastValidPosition = getPosition();
     }
@@ -173,25 +121,13 @@ void Player::move(float x, float y)
     {
         setPosition(lastValidPosition);
     }
-}
-
-bool Player::feetInSky(float leeway)
-{
-    if (getPos4Block(leeway) >= TileMap::blocks::sky1
-        && getPos5Block(leeway) >= TileMap::blocks::sky1)
-    {
-        return true;
-    }
-    return false;
+    hitbox.update(sprite.getPosition().x, sprite.getPosition().y);
 }
 
 void Player::jump()
 {
-    // if on ground, we can jump
-    // we need some leeway though because if we go into onto or
-    // into a tile that is not sky, we will not be able to jump
-    float leeway = 0.5f;
-    if (!feetInSky(leeway))
+    // we can jump if we're on the ground
+    if (! hitbox.feetInSky())
     {
         speed.y = -max_speed_y * 1.5;
     }
@@ -262,7 +198,7 @@ void Player::collisionDetection(float sec)
 
     // movement from game mechanics
     // fall down
-    if (feetInSky())
+    if (hitbox.feetInSky())
     {
         move(0.f, gravity_accel);
     }
@@ -273,11 +209,11 @@ void Player::momentumHandler(float sec)
     float gravity_accel = getGravityAcceleration(sec);
 
     // momentum
-    if (feetInSky())
+    if (hitbox.feetInSky())
     {
         speed.y += gravity_accel;
-        move(0, speed.y);
     }
+    move(0, speed.y);
 
     if (speed.y > max_speed_y)
     {
@@ -294,7 +230,10 @@ void Player::update(float sec)
     collisionDetection(sec);
     keyboardInput();
     momentumHandler(sec);
-    
+}
+
+sf::RectangleShape Player::getHitBoxShape() {
+    return hitbox.getShape();
 }
 
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <vector>
+#include <map>
+#include <string>
 
 #include "utils.hpp"
 
@@ -39,6 +41,8 @@ public:
         corrupt = 13
     };
 
+    static const std::map<int, std::string> block_map;
+
     TileMap();
     ~TileMap();
 
@@ -50,4 +54,6 @@ public:
 
     static int randomGround();
     static int randomSky();
+
+   static bool blockIsSky(int block);
 };

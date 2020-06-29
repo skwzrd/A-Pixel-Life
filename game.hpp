@@ -3,7 +3,7 @@
 
 #include "utils.hpp"
 #include "player.hpp"
-#include "map.hpp"
+#include "tilemap.hpp"
 
 
 class Game {
